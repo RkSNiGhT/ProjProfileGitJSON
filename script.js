@@ -1,4 +1,6 @@
 
+let usershistory = [];
+
 function search(){
 
     var username = document.getElementById("inputUserName").value;
@@ -9,6 +11,12 @@ function search(){
 
     $.getJSON(url, (response) => {
         showUserData(response);
+
+        if(isnew(response)){
+            save(response);
+            newUserHistory(response);
+        }
+
         document.getElementById("error").innerHTML = "";
     }).fail( () => {
         showUserData({});
@@ -16,6 +24,23 @@ function search(){
     });
 
 }
+
+function isnew(response){
+    return usershistory.filter((r) => r.login === response.login).length == 0;
+}
+
+function save(response){
+    usershistory.push(response)
+}
+
+function newUserHistory(response){
+    document.getElementById("history").innerHTML += `
+    <div class="col">
+      <img id="avatar_url" src=${response.avatar_url} height="110" width="110" class="shadow rounded">
+    </div>
+    `
+}
+
 
 function showUserData(user) {
     document.getElementById("name").innerHTML = user.name || "";
